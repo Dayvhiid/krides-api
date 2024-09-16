@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use Laravel\Socialite\Facades\Socialite;
 use Dotenv\Exception\ValidationException;
@@ -74,8 +77,19 @@ Route::group([
         ], 200);
     });
 
-    Route::put('/editUserProfile/{email}', [UserController::class, 'updateProfile']);
-    Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']);
+    Route::put('/editUserProfile/{email}', [UserController::class, 'updateProfile']); //EDIT USER PROFILE
+    Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']); // Delete User Profile
+
+    Route::post('/trips/store', [TripController::class, 'store']);
+    Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
+
+    //use this in prod
+    Route::post('/testing/register', [AuthenticationController::class, 'register']);
+    Route::post('/testing/login', [AuthenticationController::class, 'login']);
+    Route::middleware('auth:api')->post('/testing/logout', [AuthenticationController::class, 'logout']);
+
+    // Route::get('/testing/login/google', [AuthenticationController::class, 'redirectToGoogle']);
+    Route::get('/testing/login/google/callback', [AuthenticationController::class, 'handleGoogleCallback']);
 
 
 });
