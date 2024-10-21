@@ -69,7 +69,7 @@ Route::group([
             ],
             ['google_id' => $googleUser->id ],
           
-            );
+            );--
         Auth::login($user);
         return response()->json([
             'message' => 'User successfully authenticated and logged in.',
