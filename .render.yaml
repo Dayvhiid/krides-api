@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: laravel-app
+    env: php
+    buildCommand: "composer install --prefer-dist --no-dev --optimize-autoloader"
+    startCommand: "php artisan migrate --force && php-fpm"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        sync: false  # Replace `sync: false` with the actual key in Render dashboard after first deploy
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://your-app-url.onrender.com  # Change this to your actual Render URL
+      - key: DB_CONNECTION
+        value: your_database_connection
+      - key: DB_HOST
+        value: your_database_host
+      - key: DB_PORT
+        value: your_database_port
+      - key: DB_DATABASE
+        value: your_database_name
+      - key: DB_USERNAME
+        value: your_database_user
+      - key: DB_PASSWORD
+        value: your_database_password
+
+
