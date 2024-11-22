@@ -93,7 +93,7 @@ Route::group([
     // Route::get('/testing/login/google', [AuthenticationController::class, 'redirectToGoogle']);
     Route::get('/testing/login/google/callback', [AuthenticationController::class, 'handleGoogleCallback']);
 
-    
+   // Chnages hrere    
 });
 
 
