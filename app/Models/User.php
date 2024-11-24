@@ -55,6 +55,12 @@ class User extends Authenticatable
     public function getJWTIdentifier() {
         return $this->getKey();
     }
+
+
+    public function trips()
+    {
+        return $this->hasMany(Trip::class);
+    }
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *

@@ -35,7 +35,8 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|string|min:6',
         ]);
-
+        
+       $user = User::where('email', $request->email)->first();
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
@@ -44,7 +45,8 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
 
         }
-        
+
+        $token = $user->createToken('auth_token')->plainTextToken;
 
        return response()->json([
         'access_token' => $token,
@@ -79,8 +81,9 @@ class AuthController extends Controller
             $validator->validated(),
             ['password' => bcrypt($request->password)]
         ));
-
+        $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
+             'access token' => $token,
             'message' => 'User successfully registered',
             'user' => $user
         ], 201);

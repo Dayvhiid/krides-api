@@ -13,10 +13,29 @@ return [
     |
     */
 
-    'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
-    ],
+    // 'defaults' => [
+    //     'guard' => env('AUTH_GUARD', 'web'),
+    //     'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+    // ],
+
+        'defaults' => [
+            'guard' => 'sanctum',
+        ],
+
+
+        'guards' => [
+            'web' => [
+                'driver' => 'session',
+                'provider' => 'users',
+            ],
+
+            'api' => [
+                'driver' => 'sanctum',
+                'provider' => 'users',
+            ],
+],
+
+
 
     
 
@@ -36,18 +55,24 @@ return [
     | Supported: "session"
     |
     */
-    'guards' => [
-        'api' => [
-            'driver' => 'jwt',
-            'provider' => 'users',
-        ],
-    ],
+    // 'guards' => [
+    //     'api' => [
+    //         'driver' => 'jwt',
+    //         'provider' => 'users',
+    //     ],
+    // ],
 
     
+    // 'api' => [
+    //     'driver' => 'jwt',
+    //     'provider' => 'users',
+    //     'hash' => true,
+    // ],
+
     'api' => [
-        'driver' => 'jwt',
-        'provider' => 'users',
-        'hash' => true,
+    \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+    'throttle:api',
+    \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ],
 
     /*

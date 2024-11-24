@@ -53,37 +53,15 @@ Route::group([
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
-
-
     
-    // Route::get('/auth/google/redirect', function (Request $request) { //  // rewrite this later to be handled to be handled by a controller
-    //     return Socialite::driver('google')->stateless()->redirect();
-    // });
-
-    // Route::get('/auth/google/callback',  function(Request $request) {  // rewrite this later to be handled to be handled by a controller
-    //     $googleUser = Socialite::driver('google')->stateless()->user();
-    //     $user =   User::updateOrCreate(
-    //         [
-    //             'name' => $googleUser->name,
-    //             'email' => $googleUser->email,
-    //             'password' => Str::password(12)
-    //         ],
-    //         ['google_id' => $googleUser->id ],
-          
-    //         );--
-    //     Auth::login($user);
-    //     return response()->json([
-    //         'message' => 'User successfully authenticated and logged in.',
-    //         'status_code' => 200
-    //     ], 200);
-    // });
-
-    Route::put('/editUserProfile/{email}', [UserController::class, 'updateProfile']); //EDIT USER PROFILE
-    Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']); // Delete User Profile
-
-    Route::post('/trips/store', [TripController::class, 'store']);
-    Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
+    // Protect these routes using 'auth:api' middleware
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/user-profile', [AuthController::class, 'userProfile']);
+        Route::put('/editUserProfile/{email}', [UserController::class, 'updateProfile']);
+        Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']);
+        Route::post('/trips/store', [TripController::class, 'store']);
+        Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
+    });
 
     //use this in prod
     Route::post('/testing/register', [AuthenticationController::class, 'register']);
