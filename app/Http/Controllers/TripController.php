@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,10 +14,11 @@ use Illuminate\Support\Facades\Validator;
 
 class TripController extends Controller
 {
-    //
-    // public function index(){
-
-    // }
+    //This is returns all trips that still have pending as thier status
+    public function index(){
+        $trips = Trip::where('status', 'Pending')->paginate(20);
+        return response()->json($trips, 200);
+    }
 
 
     public function store(Request $request)
@@ -28,8 +30,21 @@ class TripController extends Controller
         'distance' => 'required|string',
         'DriverId' => 'required|string|max:255',
         'paymentStatus' => 'required|string|max:255',
-        'vehicleId' => 'required|string|max:255',    
+        'vehicleId' => 'required|string|max:255',
+        'status' => 'required|string'    
     ]);
+        
+        //this block and the next prevents the user from requesting from too many rides in the space of a minute
+        $lastTrip = Trip::where('user_id', Auth::id())
+        ->orderBy('created_at', 'desc')
+        ->first();
+
+        if ($lastTrip && $lastTrip->created_at->gt(Carbon::now()->subMinute())) {
+        return response()->json([
+        'message' => 'You can only book one ride per minute.'
+        ], 429);
+        }
+
 
     // Check if validation fails
     if ($validator->fails()) {
@@ -86,6 +101,23 @@ public function getTripsByUser($userId)
         'data' => TripResource::collection($trips)
     ], 200);
 }
+
+    public function acceptTrip($id){
+        $trip = Trip::find($id);
+
+        if (!$trip) {
+            return response()->json(['message' => 'Trip not found'], 404);
+        }
+
+        if ($trip->status !== 'Pending') {
+            return response()->json(['message' => 'Trip status cannot be updated'], 400);
+        }
+
+        $trip->status = 'Accepted';
+        $trip->save();
+
+        return response()->json(['message' => 'Trip accepted successfully'], 200);
+    }
 
 
 }

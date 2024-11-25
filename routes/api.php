@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\RiderController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use Laravel\Socialite\Facades\Socialite;
 use Dotenv\Exception\ValidationException;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Console\Scheduling\Schedule;
 
-
+Artisan::command('schedule:run', function (Schedule $schedule) {
+    // Register the DeleteUnacceptedTrips command
+    $schedule->command('trips:delete-unaccepted')->everyMinute();
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -61,9 +67,19 @@ Route::group([
         Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']);
         Route::post('/trips/store', [TripController::class, 'store']);
         Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
+        Route::get('trips', [TripController::class, 'index']);
+        Route::patch('/trips/{id}/accept', [TripController::class, 'acceptTrip']);
+
+
+        Route::group(['prefix' => 'rider'], function () {
+            Route::post('/store', [RiderController::class, 'store']);
+            Route::get('/{driver_id}', [RiderController::class, 'getRideById']);
+        });
+
+
     });
 
-    //use this in prod
+
     Route::post('/testing/register', [AuthenticationController::class, 'register']);
     Route::post('/testing/login', [AuthenticationController::class, 'login']);
     Route::middleware('auth:api')->post('/testing/logout', [AuthenticationController::class, 'logout']);

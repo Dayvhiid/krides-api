@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTFactory;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -29,33 +30,64 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
-        ]);
+    // public function login(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'email' => 'required|email',
+    //         'password' => 'required|string|min:6',
+    //     ]);
         
-       $user = User::where('email', $request->email)->first();
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+    //    $user = User::where('email', $request->email)->first();
+    //     if ($validator->fails()) {
+    //         return response()->json($validator->errors(), 422);
+    //     }
 
-        if (!$token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+    //     if (!$token = auth()->attempt($validator->validated())) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
 
-        }
+    //     }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+    //     $token = $user->createToken('auth_token')->plainTextToken;
 
-       return response()->json([
-        'access_token' => $token,
-        'token_type' => 'bearer',
-        'expires_in' => auth('api')->factory()->getTTL() * 60
+    //    return response()->json([
+    //     'access_token' => $token,
+    //     'token_type' => 'bearer',
+    //     'expires_in' => auth('api')->factory()->getTTL() * 60
+    // ]);
+
+        
+    // }
+
+    public function login(Request $request)
+{
+    // Validate the request
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string|min:6',
     ]);
 
-        
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    // Attempt to authenticate the user
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    // Get the authenticated user
+    $user = Auth::user();
+
+    // Generate a Sanctum token
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    // Return the response with the token
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'bearer',
+    ]);
+}
+
 
     /**
      * Register a User.
@@ -71,6 +103,9 @@ class AuthController extends Controller
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
+            'role' => 'required|string',
+            'outlet' => 'required|string',
+            'vehicle_id' => 'required|string'
         ]);
 
         if ($validator->fails()) {

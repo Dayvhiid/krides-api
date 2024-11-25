@@ -22,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'first_name',
+        'last_name',
+        'outlet',
+        'ride',
+        'vehicle_id',
     ];
 
     /**
@@ -60,6 +66,10 @@ class User extends Authenticatable
     public function trips()
     {
         return $this->hasMany(Trip::class);
+    }
+
+    public function rides(){
+        return $this->hasMany(Ride::class);
     }
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
