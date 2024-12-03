@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Trip;
 use App\Models\User;
+use App\Events\TripUpdated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TripResource;
@@ -67,7 +68,9 @@ class TripController extends Controller
             'success' => true,
             'data' => new TripResource($trip)
         ], 201);
-        
+
+
+        event(new TripUpdated($trip));
     } catch (\Exception $e) {
         // Return error response if something goes wrong during storage
         return response()->json([
