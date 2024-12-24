@@ -18,5 +18,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-
+database/schema/mysql-schema.sql
 .vercel
