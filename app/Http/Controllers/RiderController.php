@@ -61,11 +61,12 @@ class RiderController extends Controller
 }
 
 public function getRideById($driver_id){
-    // $user = User::find($driver_id);
+    $user = User::find($driver_id);
     // $rides = $user->rides()->paginate(10);
     // Query trips based on userId
-    $rides = Ride::where('driver_id', Auth::id())->paginate(10);
+    // $rides = Ride::where('driver_id', Auth::id())->paginate(10);
 
+    $rides = Ride::where('driver_id', $driver_id)->paginate(10);
     // Check if trips exist for the user
     if ($rides->isEmpty()) {
         return response()->json([

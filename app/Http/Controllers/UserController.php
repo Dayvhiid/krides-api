@@ -49,7 +49,10 @@ class UserController extends Controller
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|string',
+            'outlet' => 'required|string',
+            'vehicle_id' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -64,6 +67,19 @@ class UserController extends Controller
         if ($request->has('email')) {
             $user->email = $request->email;
         }
+        
+        if ($request->has('role')) {
+            $user->role = $request->role;
+        }
+
+        if ($request->has('outlet')) {
+            $user->outlet = $request->outlet;
+        }
+        if ($request->has('vehicle')) {
+            $user->vehicle = $request->vehicle;
+        }
+        
+
         $user->save();
 
         return response()->json(['message' => 'Profile updated successfully.'], 200);

@@ -83,6 +83,7 @@ class AuthController extends Controller
 
     // Return the response with the token
     return response()->json([
+         'message' => 'User Logged in succesfully',
         'access_token' => $token,
         'token_type' => 'bearer',
     ]);
@@ -103,9 +104,9 @@ class AuthController extends Controller
             'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|string',
-            'outlet' => 'required|string',
-            'vehicle_id' => 'required|string'
+            'role' => 'string',
+            'outlet' => 'string',
+            'vehicle_id' => 'string'
         ]);
 
         if ($validator->fails()) {
