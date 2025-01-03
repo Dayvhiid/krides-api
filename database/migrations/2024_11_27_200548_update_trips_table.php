@@ -10,16 +10,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-
         Schema::table('trips', function (Blueprint $table) {
-            // Drop the existing foreign key constraint and user_id column
-            // $table->dropForeign(['user_id']); // Drop foreign key constraint
-            $table->dropColumn('user_id'); // Drop user_id column
+            // Drop the foreign key constraint
+            $table->dropForeign(['user_id']);
         });
-        Schema::table('trips', function (Blueprint $table) {
-            // Drop the old columns and add foreign keys
-            $table->foreignId('user_id')->nullable()->constrained('users', 'id')->onDelete('set null')->after('distance');
 
+        Schema::table('trips', function (Blueprint $table) {
+            // Drop the user_id column after the foreign key is removed
+            $table->dropColumn('user_id');
+        });
+
+        Schema::table('trips', function (Blueprint $table) {
+            // Add the new foreign key column with the updated constraint
+            $table->foreignId('user_id')->nullable()->constrained('users', 'id')->onDelete('set null')->after('distance');
         });
     }
 
