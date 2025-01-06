@@ -52,7 +52,18 @@ private function sendVerificationCode($phone, $verificationCode)
     $mobiles = $phone;
 
     // Build the URL with variables
-    $url = "https://portal.nigeriabulksms.com/api/?username=" . urlencode($username) . "&password=" . urlencode($password) . "&message=" . urlencode($message) . "&sender=" . urlencode($sender) . "&mobiles=" . urlencode($mobiles);
+    // $url = "https://portal.nigeriabulksms.com/api/?username=" . urlencode($username) 
+    // . "&password=" . urlencode($password) 
+    // . "&message=" . urlencode("Your Verification Code for krides is $message") 
+    // . "&sender=" . urlencode($sender) 
+    // . "&mobiles=" . urlencode($mobiles);
+
+    $url = "https://portal.nigeriabulksms.com/api/?username=daviddada360@gmail.com&password=David_4141&message=%22Your%20message%20is%22.$verificationCode&sender=welcome&mobiles=2349152632374&type=%22call%22";
+    
+ 
+    
+   
+
 
     // Fetch the content from the URL
     $response = file_get_contents($url);
