@@ -6,16 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AuthenticationController;
-use App\Http\Controllers\RiderController;
-use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\UserController;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\RiderController;
 use Dotenv\Exception\ValidationException;
-use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\GoogleController;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\AuthenticationController;
 
 Artisan::command('schedule:run', function (Schedule $schedule) {
     // Register the DeleteUnacceptedTrips command
@@ -57,6 +58,8 @@ Route::group([
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register-step-one', [RegistrationController::class, 'registerStepOne']);
+    Route::post('/verify-phone', [RegistrationController::class, 'verifyPhone']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     

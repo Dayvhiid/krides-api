@@ -276,7 +276,37 @@
     "token": "your_jwt_token"
   }
   ```
+### New Registration Route 
+- **URL**: `/api/auth/register-step-one`
+- **Method**: `POST`
+- **Description**: Handles the first part of the Sign Up.
+- **Request Parameters**:
+  - `email` (string, required): .
+  - `password` (integer, required): .
+  - `phone` (integer, required): .
+- **Response Example**:
+  ```json
+  {
+    "message": " login successful",
+    "user": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    },
+    "token": "your_jwt_token"
+  }
 
+
+### Phone Number Verification
+- **URL**: `/api/auth/verify-phone`
+- **Method**: `POST`
+- **Description**: Handles the phone number .
+- **Request Parameters**:
+  - `user_id` .
+  - `verification_code`.
+- **Response Example**:
+  ```json
+ 
 ### Notes
 - All endpoints that require authentication must include the `Authorization` header with a valid Bearer token.
 - Replace `{email}`, `{userId}`, and `{driver_id}` with the actual values when making requests.

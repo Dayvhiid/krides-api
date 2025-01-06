@@ -101,26 +101,55 @@ class AuthController extends Controller
 
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'string',
-            'outlet' => 'string',
-            'vehicle_id' => 'string'
+            'phone' => 'required',
+            'firstName' => 'string',
+            'lastName' => 'string'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
 
+        $verificationCode = rand(1000, 9999);
+        
+
         $user = User::create(array_merge(
             $validator->validated(),
-            ['password' => bcrypt($request->password)]
+            [
+                'password' => bcrypt($request->password),
+                'verification_code' => $verificationCode
+            ]
         ));
+
+        //the block of code that handles sending the verification code.
+        // $username = "daviddada360@gmail.com";
+        // $password = "David_4141";
+        // $message = $verificationCode;
+        // $sender = "krides";
+        // $mobiles = $request->input('phone');
+
+        // // Build the URL with variables
+        // $url = "https://portal.nigeriabulksms.com/api/?username=" . urlencode($username) . "&password=" . urlencode($password) . "&message=" . urlencode($message) . "&sender=" . urlencode($sender) . "&mobiles=" . urlencode($mobiles);
+
+        // // Fetch the content from the URL
+        // $response = file_get_contents($url);
+
+        // // Check if request was successful
+        // if ($response === false) {
+        //     echo "Error fetching URL";
+        // } else {
+        //     // return redirect(route('doctors.status'))->with('msg','Message Sent to User Succefully'); 
+        //     echo "Response: " . $response;
+        // }
+                
+
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
              'access token' => $token,
             'message' => 'User successfully registered',
+             'verification_code' => $verificationCode,
             'user' => $user
         ], 201);
 

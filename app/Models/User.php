@@ -28,6 +28,10 @@ class User extends Authenticatable
         'outlet',
         'ride',
         'vehicle_id',
+        'phone',
+        'lastName',
+        'firstName',
+        'verification_code'
     ];
 
     /**
