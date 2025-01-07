@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use App\Http\Controllers\AuthController;
@@ -185,7 +186,8 @@ class AuthController extends Controller
      */
     public function userProfile()
     {
-        return response()->json(auth()->user());
+        // return response()->json(auth()->user());
+        return new UserResource(auth()->user());
     }
 
     /**
