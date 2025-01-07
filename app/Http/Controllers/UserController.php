@@ -50,9 +50,9 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|string',
-            'outlet' => 'required|string',
-            'vehicle_id' => 'required|string'
+            'firstName' => 'string',
+            'lastName' => 'string',
+            'phone' => 'string',
         ]);
 
         if ($validator->fails()) {
@@ -60,28 +60,24 @@ class UserController extends Controller
         }
 
         // Update the user profile
-        if ($request->has('name')) {
-            $user->name = $request->name;
+        if ($request->has('firstName')) {
+            $user->firstName = $request->firstName;
+        }
+
+        if ($request->has('lastName')) {
+            $user->lastName = $request->lastName;
+        }
+        
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
         }
 
         if ($request->has('email')) {
             $user->email = $request->email;
         }
-        
-        if ($request->has('role')) {
-            $user->role = $request->role;
-        }
-
-        if ($request->has('outlet')) {
-            $user->outlet = $request->outlet;
-        }
-        if ($request->has('vehicle')) {
-            $user->vehicle = $request->vehicle;
-        }
-        
-
+    
         $user->save();
-
+        
         return response()->json(['message' => 'Profile updated successfully.'], 200);
     }
 
