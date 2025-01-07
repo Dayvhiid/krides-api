@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\PendingUser;
 use Illuminate\Http\Request;
+use App\Otp\UserRegistrationOtp;
 use Illuminate\Routing\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+// use App\Http\Controllers\AuthController;
 use Tymon\JWTAuth\Facades\JWTFactory;
-use App\Http\Controllers\AuthController;
+use SadiqSalau\LaravelOtp\Facades\Otp;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 
 
 class AuthController extends Controller
@@ -104,9 +109,9 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
-            'phone' => 'required',
-            'firstName' => 'string',
-            'lastName' => 'string'
+            'phone' => 'required|string',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -123,6 +128,27 @@ class AuthController extends Controller
                 'verification_code' => $verificationCode
             ]
         ));
+
+
+        
+
+  
+
+
+        // try {
+        //     $otp = Otp::identifier($request->email)
+        //         ->send(new UserRegistrationOtp(
+        //             firstName: $request->firstName,
+        //             lastName: $request->lastName,
+        //             email: $request->email,
+        //             password: $request->password
+        //         ), Notification::route('mail', $request->email));
+        
+        //     return response()->json(['status' => $otp['status']]);
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e->getMessage()]);
+        // }
+        
 
         //the block of code that handles sending the verification code.
         // $username = "daviddada360@gmail.com";
@@ -156,6 +182,10 @@ class AuthController extends Controller
 
 
     }
+
+    
+  
+
 
     /**
      * Log the user out (Invalidate the token).

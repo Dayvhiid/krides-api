@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use SadiqSalau\LaravelOtp\Facades\Otp;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TripController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\GoogleController;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\AuthenticationController;
+
 
 Artisan::command('schedule:run', function (Schedule $schedule) {
     // Register the DeleteUnacceptedTrips command
@@ -62,6 +64,44 @@ Route::group([
     Route::post('/verify-phone', [RegistrationController::class, 'verifyPhone']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
+
+
+
+    Route::post('/otp/verify', function (Request $request) {
+
+        $request->validate([
+            'email'    => ['required', 'string', 'email', 'max:255'],
+            'code'     => ['required', 'string']
+        ]);
+    
+        $otp = Otp::identifier($request->email)->attempt($request->code);
+    
+        if($otp['status'] != Otp::OTP_PROCESSED)
+        {
+            abort(403, __($otp['status']));
+        }
+    
+        return $otp['result'];
+    });
+    
+    
+    
+   
+    /** OTP Resend Route */
+    Route::post('/otp/resend', function (Request $request) {
+    
+        $request->validate([
+            'email'    => ['required', 'string', 'email', 'max:255']
+        ]);
+    
+        $otp = Otp::identifier($request->email)->update();
+    
+        if($otp['status'] != Otp::OTP_SENT)
+        {
+            abort(403, __($otp['status']));
+        }
+        return __($otp['status']);
+    });
     
     // Protect these routes using 'auth:api' middleware
     Route::middleware('auth:api')->group(function () {
