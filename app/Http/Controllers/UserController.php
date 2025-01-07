@@ -49,7 +49,7 @@ class UserController extends Controller
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'string|email|max:255|unique:users,email,' . $user->id,
             'firstName' => 'string',
             'lastName' => 'string',
             'phone' => 'string',
@@ -77,7 +77,7 @@ class UserController extends Controller
         }
     
         $user->save();
-        
+
         return response()->json(['message' => 'Profile updated successfully.'], 200);
     }
 
