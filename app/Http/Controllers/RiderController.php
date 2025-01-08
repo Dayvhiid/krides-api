@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ride;
 use App\Models\User;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 use App\Http\Resources\RideResource;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,12 @@ use Illuminate\Support\Facades\Validator;
 
 class RiderController extends Controller
 {
+   public function index(){
+      $driver = Driver::all();
+      return response()->json(['success' => true, 'data' => $driver], 200);
+   }
+
+
     public function store(Request $request)
 {
     // Validate the data

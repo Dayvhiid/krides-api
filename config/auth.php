@@ -28,6 +28,10 @@ return [
         'provider' => 'users',
         'hash' => false,
     ],
+    'drivers' => [
+        'driver' => 'sanctum',
+        'provider' => 'drivers',
+    ],
 ],
 
 
@@ -90,6 +94,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+
+        'drivers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Driver::class,
+        ],
     ],
 
     /*
@@ -115,6 +124,13 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'drivers' => [
+            'provider' => 'drivers',
+            'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
         ],

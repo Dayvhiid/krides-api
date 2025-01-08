@@ -96,4 +96,33 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Profile deleted successfully.'], 200);
     }
+
+
+    public function updatePicture(Request $request)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'picture' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', // Optional image validation
+        ]);
+
+        // Find the authenticated user
+        $user = auth()->user(); 
+
+        // Check if a picture is provided
+        if ($request->hasFile('picture')) {
+            // Store the picture in the 'public' disk
+            $path = $request->file('picture')->store('profile_pictures', 'public');
+
+            // Update the user's picture path in the database
+            $user->picture = $path; // Save the file path to the 'picture' column
+        }
+
+        // Save the other user data
+        $user->save();
+
+        return response()->json([
+            'message' => 'Profile updated successfully!',
+            'user' => $user
+        ]);
+    }
 }

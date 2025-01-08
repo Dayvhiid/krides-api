@@ -1,8 +1,10 @@
 <?php
-namespace App\Api\V1; 
+namespace App\Api\V1;
+
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Events\TripNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +16,7 @@ use App\Http\Controllers\UserController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\RiderController;
 use Dotenv\Exception\ValidationException;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\GoogleController;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Http\Controllers\RegistrationController;
@@ -58,6 +61,8 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
+    Route::post('/driver/register', [DriverController::class, 'register']);
+    Route::post('/driver/login', [DriverController::class, 'login']); //phone number and password.
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/register-step-one', [RegistrationController::class, 'registerStepOne']);
@@ -107,11 +112,14 @@ Route::group([
     Route::middleware('auth:api')->group(function () {
         Route::get('/user-profile', [AuthController::class, 'userProfile']);
         Route::put('/editUserProfile/{email}', [UserController::class, 'updateProfile']);
+        Route::post('update/profile-picture', [UserController::class, 'updatePicture']); //update user profile picture
         Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']);
         Route::post('/trips/store', [TripController::class, 'store']);
         Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
         Route::get('trips', [TripController::class, 'index']);
         Route::patch('/trips/{id}/accept', [TripController::class, 'acceptTrip']);
+
+        Route::post('/riders', [RiderController::class, 'index']);
 
 
         Route::group(['prefix' => 'rider'], function () {
@@ -119,8 +127,19 @@ Route::group([
             Route::get('/{driver_id}', [RiderController::class, 'getRideById']);
         });
 
+        Route::get('/driver/profile', [DriverController::class, 'profile']); //get driver profile by acces token
+        Route::get('driver-list', [DriverController::class, 'list']); //list of all drivers names
+
+
+      
+
+        // Route::get('/event', function () {
+        //     event(new TripNotification('This is our first broadcasted event'));
+        // });
+
 
     });
+
 
 
     Route::post('/testing/register', [AuthenticationController::class, 'register']);

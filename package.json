@@ -11,6 +11,8 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "laravel-echo": "^1.17.1",
+        "pusher-js": "^8.4.0-rc2",
         "vercel": "^37.4.0"
     }
 }

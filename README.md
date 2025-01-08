@@ -258,6 +258,55 @@
   }
   ```
 
+ ##### Register Rider
+- **URL**: `/api/auth/driver/register`
+- **Method**: `POST`
+- **Description**: Register/Sign In Driver.
+- **Request Headers**:
+  - fullname,phone,password,vehicle_id.
+- **Response Example**:
+  ```json
+  {
+    "rider": {
+      "id": 1,
+      "name": "Jane Doe",
+      "driver_id": 1
+    }
+  } 
+
+
+ ##### Login Rider
+- **URL**: `/api/auth/driver/login`
+- **Method**: `POST`
+- **Description**: Login the driver.
+- **Request Headers**:
+  - phone,password.
+- **Response Example**:
+  ```json
+  {
+    "rider": {
+      "id": 1,
+      "name": "Jane Doe",
+      "driver_id": 1
+    }
+  }
+
+ ##### Update Profile For Driver
+- **URL**: `/api/auth/driver/register`
+- **Method**: `POST`
+- **Description**: Update Profile Picture.
+- **Request Headers**:
+  - Access token as Auth Header,picture (Make Sure you pass in) Content Type: Multipart-form Data, 
+- **Response Example**:
+  ```json
+  {
+    "rider": {
+      "id": 1,
+      "name": "Jane Doe",
+      "driver_id": 1
+    }
+  }    
+
 ### Google Authentication Endpoints
 
 ##### Google Login Callback

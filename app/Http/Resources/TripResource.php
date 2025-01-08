@@ -18,13 +18,16 @@ class TripResource extends JsonResource
             'id' => $this->id,
             'location' => $this->location,
             'destination' => $this->destination,
-            'distance' => $this->distance,
+            // 'distance' => $this->distance,
             // 'userId' => $this->userId,
-            'DriverId' => $this->driverId,
-            'paymentStatus' => $this->paymentStatus,
-            'vehicleId' => $this->vehicleId,
-            'user_id' => $this->user_id,
-            'status' => $this->status
+            // 'DriverId' => $this->driverId,
+            // 'paymentStatus' => $this->paymentStatus,
+            // 'vehicleId' => $this->vehicleId,
+            // 'user_id' => $this->user_id,
+            // 'status' => $this->status
+            'number_of_passengers' => $this->number_of_passengers,
+            'rider_name' => $this->rider_name,
+            'amount' => $this->amount
         ];
     }
 }

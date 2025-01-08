@@ -17,7 +17,10 @@ class Trip extends Model
         'paymentStatus',
         'vehicleId',
         'user_id',
-        'status'
+        'status',
+        'amount',
+        'number_of_passengers',
+        'rider_name'
     ];
 
     public function user()

@@ -7,6 +7,7 @@ use App\Models\Trip;
 use App\Models\User;
 use App\Events\TripUpdated;
 use Illuminate\Http\Request;
+use App\Events\TripRequested;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TripResource;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +18,20 @@ class TripController extends Controller
 {
     //This is returns all trips that still have pending as thier status
     public function index(){
-        $trips = Trip::where('status', 'Pending')->paginate(20);
-        return response()->json($trips, 200);
+        // $trips = Trip::where('status', 'Pending')->paginate(20);
+        // return response()->json($trips, 200);
+        $user = auth()->user();
+
+        // Ensure the user is authenticated
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+    
+        // Fetch all trips belonging to the authenticated user
+        $trips = Trip::where('user_id', $user->id)->get();
+    
+        // Return the trips using the resource
+        return TripResource::collection($trips);
     }
 
 
@@ -28,23 +41,26 @@ class TripController extends Controller
     $validator = Validator::make($request->all(), [
         'location' => 'required|string|max:255',
         'destination' => 'required|string|max:255',
-        'distance' => 'required|string',
-        'DriverId' => 'required|string|max:255',
-        'paymentStatus' => 'required|string|max:255',
-        'vehicleId' => 'required|string|max:255',
-        'status' => 'required|string'    
+        'amount' => 'required|string|max:225',
+        'number_of_passengers' => 'required|integer|max:3',
+        'rider_name' => 'required|string|max:225'
+        // 'distance' => 'required|string',
+        // 'DriverId' => 'required|string|max:255',
+        // 'paymentStatus' => 'required|string|max:255',
+        // 'vehicleId' => 'required|string|max:255',
+        // 'status' => 'required|string'    
     ]);
         
         //this block and the next prevents the user from requesting from too many rides in the space of a minute
-        $lastTrip = Trip::where('user_id', Auth::id())
-        ->orderBy('created_at', 'desc')
-        ->first();
+        // $lastTrip = Trip::where('user_id', Auth::id())
+        // ->orderBy('created_at', 'desc')
+        // ->first();
 
-        if ($lastTrip && $lastTrip->created_at->gt(Carbon::now()->subMinute())) {
-        return response()->json([
-        'message' => 'You can only book one ride per minute.'
-        ], 429);
-        }
+        // if ($lastTrip && $lastTrip->created_at->gt(Carbon::now()->subMinute())) {
+        // return response()->json([
+        // 'message' => 'You can only book one ride per minute.'
+        // ], 429);
+        // }
 
 
     // Check if validation fails
@@ -62,6 +78,7 @@ class TripController extends Controller
 
         // Create a new trip using the validated data
         $trip = Trip::create($validatedData);
+        event(new TripRequested($trip));
 
         // Return a resource response with the newly created trip
         return response()->json([
@@ -70,7 +87,7 @@ class TripController extends Controller
         ], 201);
 
 
-        event(new TripUpdated($trip));
+      
     } catch (\Exception $e) {
         // Return error response if something goes wrong during storage
         return response()->json([
