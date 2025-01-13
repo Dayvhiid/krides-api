@@ -10,15 +10,14 @@ use Illuminate\Notifications\Notification;
 class ResetPasswordNotification extends Notification
 {
     use Queueable;
-
+    public $token;
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($token)
     {
-        //
+        $this->token = $token; // Assign the token to the property
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -28,15 +27,15 @@ class ResetPasswordNotification extends Notification
     {
         return ['mail'];
     }
-
+    
     /**
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
+                    ->line('This is your password update link.')
+                    ->action('Click To Update Password', url('/reset-password/{token}'))
                     ->line('Thank you for using our application!');
     }
 
