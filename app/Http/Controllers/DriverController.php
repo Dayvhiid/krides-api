@@ -13,8 +13,7 @@ class DriverController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required',
+        $validator = Validator::make($request->all(), [ 
             'password' => 'required|string|min:6',
             'phone' => 'required|string',
             'fullname' => 'string',
@@ -27,13 +26,16 @@ class DriverController extends Controller
         }
 
         $verificationCode = rand(1000, 9999);
-        
+        $uniqueEmail = strtolower(str_replace(' ', '_', $request->fullname)) . '_' . time() . '@example.com';
+
 
         $user = User::create(array_merge(
             $validator->validated(),
             [
                 'password' => bcrypt($request->password),
-                'verification_code' => $verificationCode
+                'verification_code' => $verificationCode,
+                'email' => $uniqueEmail,
+                'role' => 'driver'
             ]
         ));
 
