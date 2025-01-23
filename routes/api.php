@@ -66,10 +66,11 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::delete('/deleteUserProfile/{email}', [UserController::class, 'deleteProfile']);
 
         // Trip Management
-        Route::post('/trips/store', [TripController::class, 'store']);
-        Route::get('/trips/user/{userId}', [TripController::class, 'getTripsByUser']);
+        Route::post('/trips/create', [TripController::class, 'store']);
+        Route::get('/trips/user_history', [TripController::class, 'getTripsByUser']);//get user ride history
         Route::get('/trips', [TripController::class, 'index']);
         Route::patch('/trips/{id}/accept', [TripController::class, 'acceptTrip']);
+        Route::get('ride/{driver_name}', [DriverController::class, 'fetchRide']);//fetch rider history by driver name
 
         // Rider Management
         Route::post('/riders', [RiderController::class, 'index']);

@@ -124,7 +124,7 @@
 #### Trip Endpoints
 
 ##### Create Trip
-- **URL**: `/api/trips/store`
+- **URL**: `/api/trips/create`
 - **Method**: `POST`
 - **Description**: Create a new trip.
 - **Request Headers**:
@@ -132,7 +132,8 @@
 - **Request Parameters**:
   - `destination` (string, required): The destination of the trip.
   - `start_time` (string, required): The start time of the trip.
-  - `end_time` (string, required): The end time of the trip.
+  - `number_of_passengers` (string, required).
+  - `rider_name` (string, required): rider name.
 - **Response Example**:
   ```json
   {
@@ -146,30 +147,7 @@
   }
   ```
 
-##### Get Trips by User
-- **URL**: `/api/auth/trips/user/{userId}`
-- **Method**: `GET`
-- **Description**: Get all trips for a specific user.
-- **Request Headers**:
-  - `Authorization` (string, required): Bearer token.
-- **Response Example**:
-  ```json
-  {
-    "trips": [
-      {
-        "id": 1,
-        "destination": "New York",
-        "start_time": "2023-10-01 10:00:00",
-        "end_time": "2023-10-01 14:00:00"
-      },
-      {
-        "id": 2,
-        "destination": "Los Angeles",
-        "start_time": "2023-10-02 08:00:00",
-        "end_time": "2023-10-02 12:00:00"
-      }
-    ]
-  }
+
   ```
 
 ##### Get All Trips
@@ -355,6 +333,49 @@
   - `verification_code`.
 - **Response Example**:
   ```json
+
+
+ ### New Registration Route 
+- **URL**: `/api/auth/ride/{driver_name}`
+- **Method**: `GET`
+- **Description**: Fetches Driver History by filtering with the name.
+- **Response Example**:
+  ```json
+  {
+    "success": " true",
+    "user": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    },
+    "token": "your_jwt_token"
+  }
+ 
+
+##### Get Trips by User
+- **URL**: `/api/auth/trips/user_history`
+- **Method**: `GET`
+- **Description**: Get all trips for a specific user.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Response Example**:
+  ```json
+  {
+    "trips": [
+      {
+        "id": 1,
+        "destination": "New York",
+        "start_time": "2023-10-01 10:00:00",
+        "end_time": "2023-10-01 14:00:00"
+      },
+      {
+        "id": 2,
+        "destination": "Los Angeles",
+        "start_time": "2023-10-02 08:00:00",
+        "end_time": "2023-10-02 12:00:00"
+      }
+    ]
+  } 
  
 ### Notes
 - All endpoints that require authentication must include the `Authorization` header with a valid Bearer token.

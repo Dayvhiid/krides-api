@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\DriverResource;
+use App\Models\Trip;
 use App\Models\User;
 use App\Models\Driver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\DriverResource;
 use Illuminate\Support\Facades\Validator;
 
 class DriverController extends Controller
@@ -92,10 +93,41 @@ class DriverController extends Controller
         return new DriverResource(auth()->user());
     }
 
-    public function list(){
+    public function list(){ //should pick the vehicle ID and driver name
         $drivers = User::whereNotNull('vehicle_id')->pluck('fullname');
 
         // Return the results as a JSON response
         return response()->json($drivers);
     }
+
+    public function fetchRide($driver_name)
+{
+    try {
+        // Search for trips with an exact match for the driver_name
+        $trips = Trip::where('rider_name', $driver_name)->get();
+
+        // Check if any trips were found
+        if ($trips->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No trips found for the given rider name.'
+            ], 404);
+        }
+
+        // Return the filtered trips
+        return response()->json([
+            'success' => true,
+            'data' => $trips
+        ], 200);
+
+    } catch (\Exception $e) {
+        // Handle any unexpected errors
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred while fetching rides.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 }

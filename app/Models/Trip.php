@@ -20,7 +20,9 @@ class Trip extends Model
         'status',
         'amount',
         'number_of_passengers',
-        'rider_name'
+        'rider_name',
+        'phone_number',
+        'name'
     ];
 
     public function user()
