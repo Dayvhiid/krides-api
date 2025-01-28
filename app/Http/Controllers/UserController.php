@@ -102,7 +102,7 @@ class UserController extends Controller
     {
         // Validate the incoming request
         $validated = $request->validate([
-            'picture' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048', // Optional image validation
+            'picture' => 'required|image|mimes:jpg,jpeg,png,gif|max:10048', // Optional image validation
         ]);
 
         // Find the authenticated user

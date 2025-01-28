@@ -192,13 +192,19 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    // public function logout()
+    // {
+    //     auth()->logout();
+
+    //     return response()->json(['message' => 'User successfully signed out']);
+    // }
     public function logout()
-    {
-        auth()->logout();
+{
+    // Revoke the current user's token
+    auth()->user()->tokens()->delete();
 
-        return response()->json(['message' => 'User successfully signed out']);
-    }
-
+    return response()->json(['message' => 'User successfully signed out']);
+}
     /**
      * Refresh a token.
      *

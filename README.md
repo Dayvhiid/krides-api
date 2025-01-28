@@ -377,6 +377,20 @@
     ]
   } 
  
+##### Update Profile Picture
+- **URL**: `/api/auth/update/profile-picture`
+- **Method**: `POST`
+- **Description**: Update User Profile Picture.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+  - `Multipart/form-data`.
+- **Response Example**:
+  ```json
+  {
+   
+    
+  }  
+- **Method** : `jpg, jpeg, png, gif, max 10MB`  
 ### Notes
 - All endpoints that require authentication must include the `Authorization` header with a valid Bearer token.
 - Replace `{email}`, `{userId}`, and `{driver_id}` with the actual values when making requests.
