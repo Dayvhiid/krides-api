@@ -377,20 +377,45 @@
     ]
   } 
  
-##### Update Profile Picture
+
+## Method
+`POST`
 - **URL**: `/api/auth/update/profile-picture`
-- **Method**: `POST`
-- **Description**: Update User Profile Picture.
-- **Request Headers**:
-  - `Authorization` (string, required): Bearer token.
-  - `Multipart/form-data`.
-- **Response Example**:
-  ```json
-  {
-   
-    
-  }  
-- **Method** : `jpg, jpeg, png, gif, max 10MB`  
+## Description
+This endpoint allows authenticated users to update their profile picture. The uploaded image is validated, stored on the server, and the file path is saved in the user's `picture` field in the database.
+
+---
+
+## Request
+
+### Headers
+| Key            | Value                        | Description                          |
+|----------------|------------------------------|--------------------------------------|
+| `Authorization`| `Bearer <token>`             | Required. The Bearer token of the authenticated user. |
+| `Content-Type` | `multipart/form-data`        | Required. The request must be sent as form data.       |
+
+### Body (Form Data)
+| Field    | Type   | Description                          | Required |
+|----------|--------|--------------------------------------|----------|
+| `picture`| File   | The image file to upload. Supported formats: `jpg`, `jpeg`, `png`, `gif`. Maximum file size: `10MB`. | Yes      |
+
+---
+
+## Response
+
+### Success Response (200 OK)
+```json
+{
+    "message": "Profile picture updated successfully!",
+    "user": {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "picture": "profile_pictures/filename.jpg", // Path to the uploaded picture
+        "created_at": "2023-10-01T12:00:00.000000Z",
+        "updated_at": "2023-10-05T15:30:00.000000Z"
+    }
+}
 ### Notes
 - All endpoints that require authentication must include the `Authorization` header with a valid Bearer token.
 - Replace `{email}`, `{userId}`, and `{driver_id}` with the actual values when making requests.
