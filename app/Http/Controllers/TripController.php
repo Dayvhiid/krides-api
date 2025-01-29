@@ -218,7 +218,7 @@ public function getTripsByUser(Request $request)
         // Return the trips
         return response()->json([
             'success' => true,
-            'data' => $trips
+            'data' => TripResource::collection($trips)
         ], 200);
 
     } catch (\Exception $e) {
