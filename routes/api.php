@@ -118,6 +118,6 @@ Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
 })->middleware(['signed'])->name('verification.verify');
 
 // Schedule Command for Deleting Unaccepted Trips
-Artisan::command('schedule:run', function ($schedule) {
-    $schedule->command('trips:delete-unaccepted')->everyMinute();
-});
+// Artisan::command('schedule:run', function ($schedule) {
+//     $schedule->command('trips:delete-unaccepted')->everyMinute();
+// });
