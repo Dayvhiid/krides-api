@@ -181,22 +181,22 @@ public function store(Request $request)
 //     ], 200);
 // }
 
-//     public function acceptTrip($id){
-//         $trip = Trip::find($id);
+    public function acceptTrip($id){
+        $trip = Trip::find($id);
 
-//         if (!$trip) {
-//             return response()->json(['message' => 'Trip not found'], 404);
-//         }
+        if (!$trip) {
+            return response()->json(['message' => 'Trip not found'], 404);
+        }
 
-//         if ($trip->status !== 'Pending') {
-//             return response()->json(['message' => 'Trip status cannot be updated'], 400);
-//         }
+        if ($trip->status !== 'Pending') {
+            return response()->json(['message' => 'Trip status cannot be updated'], 400);
+        }
 
-//         $trip->status = 'Accepted';
-//         $trip->save();
+        $trip->status = 'Accepted';
+        $trip->save();
 
-//         return response()->json(['message' => 'Trip accepted successfully'], 200);
-//     }
+        return response()->json(['message' => 'Trip accepted successfully'], 200);
+    }
 
 public function getTripsByUser(Request $request)
 {
