@@ -36,6 +36,8 @@ class AuthenticationController extends Controller
     // User Login
     public function login(Request $request)
     {
+
+        
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('trips', function (Blueprint $table) {
             $table->string('number_of_passengers')->nullable();
             $table->string('amount')->nullable();
-            $table->string('rider_name')->nullable();//create an api to get all the rider(A rider list)
+            $table->string('rider_name')->nullable();//create an api route to get all the rider(A rider list)
         });
     }
 
