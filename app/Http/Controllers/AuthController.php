@@ -87,8 +87,8 @@ class AuthController extends Controller
 
     // Generate a Sanctum token
     $token = $user->createToken('auth_token')->plainTextToken;
-    (new Otp)->generate('daviddada360@gmail.com', 'numeric', 6, 15);
-   dd( (new Otp)->generate('michael@okoh.co.uk', 'numeric', 6, 15));
+//     (new Otp)->generate('daviddada360@gmail.com', 'numeric', 6, 15);
+//    dd( (new Otp)->generate('michael@okoh.co.uk', 'numeric', 6, 15));
 
     // Return the response with the token
     return response()->json([
