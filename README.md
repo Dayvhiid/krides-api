@@ -124,7 +124,7 @@
 #### Trip Endpoints
 
 ##### Create Trip
-- **URL**: `/api/trips/create`
+- **URL**: `/api/auth/trips/create`
 - **Method**: `POST`
 - **Description**: Create a new trip.
 - **Request Headers**:

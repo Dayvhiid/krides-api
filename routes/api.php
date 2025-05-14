@@ -73,15 +73,15 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('ride/{driver_name}', [DriverController::class, 'fetchRide']);//fetch rider history by driver name
 
         // Rider Management
-        Route::post('/riders', [RiderController::class, 'index']);
+        Route::post('/riders', [RiderController::class, 'index']); // me sef i dont know what this one is doing
         Route::group(['prefix' => 'rider'], function () {
             Route::post('/store', [RiderController::class, 'store']);
-            Route::get('/{driver_id}', [RiderController::class, 'getRideById']);
+            Route::get('/{driver_id}', [RiderController::class, 'getRideById']); // Get a history of the riders trips by user id
         });
 
         // Driver Management
-        Route::get('/driver/profile', [DriverController::class, 'profile']);
-        Route::get('/driver-list', [DriverController::class, 'list']);
+        Route::get('/driver/profile', [DriverController::class, 'profile']); //This is the driver profile
+        Route::get('/driver-list', [DriverController::class, 'list']);  //gets a list of all drivers
     });
 
     // Testing Routes

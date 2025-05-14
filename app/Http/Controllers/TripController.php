@@ -188,8 +188,8 @@ public function store(Request $request)
             return response()->json(['message' => 'Trip not found'], 404);
         }
 
-        if ($trip->status !== 'Accepted') {
-            return response()->json(['message' => 'Trip status cannot be updated'], 400);
+        if ($trip->status == 'Accepted') {
+            return response()->json(['message' => 'Trip status is already accepted'], 400);
         }
 
         $trip->status = 'Accepted';
