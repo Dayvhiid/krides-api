@@ -350,6 +350,9 @@
     },
     "token": "your_jwt_token"
   }
+
+
+  
  
 
 ##### Get Trips by User
@@ -376,7 +379,59 @@
       }
     ]
   } 
+
+##### Get A List of driver pending rides
+- **URL**: `/api/auth/driver/trips`
+- **Method**: `GET`
+- **Description**: Get A list of  pending  rides using status as a filter.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Response Example**:
+  ```json
+  {
+    "trips": [
+      {
+        "success": true,
+        "data": "trips resource",
+       
+      },
+      {
+        "success": false,
+        "data": "No pending trips found",
+      },
+      
+    ]
+  }   
  
+
+ ### Accept Rides
+- **URL**: `/api/auth/trips{trip_id}/accept`
+- **Method**: `POST`
+- **Description**: An endpoint to accept user rides by  trip id.
+- **Request Parameters**:
+  - `Please leave the request body empty` .
+
+- **Response Example**:
+  ```json
+
+
+##### Get Trip Info
+- **URL**: `/api/auth/trips/{trip_id}`
+- **Method**: `GET`
+- **Description**: Get full information about a trip including driver details.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Response Example**:
+  ```json
+  {
+    "trips": [
+      {
+        "success": true,
+        "data": "trips resource (with appended driver details)",
+      },      
+    ]
+  }   
+  
 
 ## Method
 `POST`
@@ -416,8 +471,14 @@ This endpoint allows authenticated users to update their profile picture. The up
         "updated_at": "2023-10-05T15:30:00.000000Z"
     }
 }
+
+
+
 ### Notes
 - All endpoints that require authentication must include the `Authorization` header with a valid Bearer token.
 - Replace `{email}`, `{userId}`, and `{driver_id}` with the actual values when making requests.
 
 YOU CAN IGNORE ANY URL THAT HAS TESTING
+
+
+

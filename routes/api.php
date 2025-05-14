@@ -69,7 +69,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::post('/trips/create', [TripController::class, 'store']);
         Route::get('/trips/user_history', [TripController::class, 'getTripsByUser']);//get user ride history
         Route::get('/trips', [TripController::class, 'index']);
-        Route::patch('/trips/{id}/accept', [TripController::class, 'acceptTrip']);
+        // Route::patch('/trips/{id}/accept', [TripController::class, 'acceptTrip']);
         Route::get('ride/{driver_name}', [DriverController::class, 'fetchRide']);//fetch rider history by driver name
 
         // Rider Management
@@ -82,6 +82,9 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         // Driver Management
         Route::get('/driver/profile', [DriverController::class, 'profile']); //This is the driver profile
         Route::get('/driver-list', [DriverController::class, 'list']);  //gets a list of all drivers
+        Route::get('/driver/trips', [DriverController::class, 'fetchRidesGlobal']); //get a list of all pending trips.   //dcmt
+        Route::post('/trips/{trip}/accept', [TripController::class, 'accept']);// accepts the ride while using the trips  id //dcmt
+        Route::get('trips/{trip}', [TripController::class, 'show']);//get a specific trip by id //dcmt
     });
 
     // Testing Routes

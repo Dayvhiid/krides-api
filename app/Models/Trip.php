@@ -22,11 +22,24 @@ class Trip extends Model
         'number_of_passengers',
         'rider_name',
         'phone_number',
-        'name'
+        'name',
+        'driver_id',
     ];
 
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
+
     public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
+public function driver()
+{
+    return $this->belongsTo(User::class, 'driver_id');
+}
+
 }

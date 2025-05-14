@@ -18,6 +18,11 @@ class TripResource extends JsonResource
             'id' => $this->id,
             'location' => $this->location,
             'destination' => $this->destination,
+            'driver' => $this->when($this->driver, [
+                'id' => $this->driver->id,
+                'name' => $this->driver->fullname,
+                'email' => $this->driver->email,
+            ]),
             // 'distance' => $this->distance,
             // 'userId' => $this->userId,
             // 'DriverId' => $this->driverId,
@@ -27,7 +32,11 @@ class TripResource extends JsonResource
             // 'status' => $this->status
             'number_of_passengers' => $this->number_of_passengers,
             'rider_name' => $this->rider_name,
-            'amount' => $this->amount
+            'amount' => $this->amount,
+            "name" => $this->user->name,
+            "email" => $this->user->email,
+             "phone" => $this->user->phone,
+             "user_id" => $this->user->id
         ];
     }
 }

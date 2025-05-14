@@ -13,6 +13,7 @@ use App\Http\Resources\TripResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class TripController extends Controller
 {
@@ -181,22 +182,36 @@ public function store(Request $request)
 //     ], 200);
 // }
 
-    public function acceptTrip($id){
-        $trip = Trip::find($id);
+    // public function acceptTrip($id){
+    //     $trip = Trip::find($id);
 
-        if (!$trip) {
-            return response()->json(['message' => 'Trip not found'], 404);
-        }
+    //     if (!$trip) {
+    //         return response()->json(['message' => 'Trip not found'], 404);
+    //     }
 
-        if ($trip->status == 'Accepted') {
-            return response()->json(['message' => 'Trip status is already accepted'], 400);
-        }
+    //     if ($trip->status == 'Accepted') {
+    //         return response()->json(['message' => 'Trip status is already accepted'], 400);
+    //     }
 
-        $trip->status = 'Accepted';
-        $trip->save();
+    //     $trip->status = 'Accepted';
+    //     $trip->save();
 
-        return response()->json(['message' => 'Trip accepted successfully'], 200);
-    }
+    //     return response()->json(['message' => 'Trip accepted successfully'], 200);
+    // }
+
+
+    public function acceptTrip(Request $request, Trip $trip)
+{
+    $trip->update([
+        'status' => 'accepted',
+        'driver_id' => auth()->id(), // authenticated driver (from users table)
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Trip accepted successfully.'
+    ]);
+}
 
 public function getTripsByUser(Request $request)
 {
@@ -229,6 +244,45 @@ public function getTripsByUser(Request $request)
             'error' => $e->getMessage()
         ], 500);
     }
+}
+
+
+
+public function accept(Request $request, $tripId)
+{
+    return DB::transaction(function () use ($tripId) {
+        $trip = Trip::where('id', $tripId)
+                    ->lockForUpdate()
+                    ->first();
+
+        if (!$trip) {
+            return response()->json(['message' => 'Trip not found.'], 404);
+        }
+
+        if ($trip->status == 'Accepted') {
+            return response()->json(['message' => 'Trip has already been accepted.'], 409);
+        }
+
+        $trip->update([
+            'status' => 'Accepted',
+            'driver_id' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'message' => 'Trip accepted successfully.',
+            'trip' => $trip->load('user') // Assuming 'user' is the passenger
+        ]);
+    });
+}
+
+
+public function show($id)
+{
+    $trip = Trip::with('driver')->findOrFail($id);
+    // return response()->json([
+    //     'trip' => $trip
+    // ]);
+     return new TripResource($trip);
 }
 
 

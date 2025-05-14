@@ -203,4 +203,24 @@ class DriverController extends Controller
     }
 }
 
+
+public function fetchRidesGlobal()
+{
+    // Fetch all trips with a status of 'pending'
+    $trips = Trip::whereNULL('status')->get();
+
+    // Check if any trips were found
+    if ($trips->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No pending trips found.'
+        ], 404);
+    }
+
+    // Return the filtered trips
+    return response()->json([
+        'success' => true,
+        'data' => $trips
+    ], 200);  }
+
 }
