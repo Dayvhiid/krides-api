@@ -223,4 +223,23 @@ public function fetchRidesGlobal()
         'data' => $trips
     ], 200);  }
 
+
+ public function updateSubaccountId(Request $request)
+    {
+        $request->validate([
+            'subaccount_id' => 'required|string',
+        ]);
+
+        $driver = auth()->user(); // or Driver::find(auth()->id()) if you're not using driver guard
+
+        $driver->subaccount_id = $request->subaccount_id;
+        $driver->save();
+
+        return response()->json([
+            'message' => 'Subaccount ID updated successfully.',
+            'data' => $driver,
+        ]);
+    }
+
+
 }

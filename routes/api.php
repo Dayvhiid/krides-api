@@ -19,6 +19,7 @@ use App\Http\Controllers\{
     RegistrationController,
     AuthenticationController,
     GoogleController,
+    PaymentController,
     Auth\PasswordResetController,
     Auth\ForgotPasswordController
 };
@@ -44,7 +45,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     Route::post('/driver/login', [DriverController::class, 'login']);
 
     // Normal User Authentication
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::any('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/register-step-one', [RegistrationController::class, 'registerStepOne']);
     Route::post('/verify-phone', [RegistrationController::class, 'verifyPhone']);
@@ -85,6 +86,24 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('/driver/trips', [DriverController::class, 'fetchRidesGlobal']); //get a list of all pending trips.   //dcmt
         Route::post('/trips/{trip}/accept', [TripController::class, 'accept']);// accepts the ride while using the trips  id //dcmt
         Route::get('trips/{trip}', [TripController::class, 'show']);//get a specific trip by id //dcmt
+
+
+        //Endpoint for drivers to update their subaccount id
+        Route::put('/driver/subaccount', [DriverController::class, 'updateSubaccountId']); //dcmt
+
+
+
+        //Paymment Management
+        Route::post('/wallet/fund', [PaymentController::class, 'fundWallet']);
+        // Route::any('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+        Route::post('/trip/pay', [PaymentController::class, 'payForTrip']);
+
+        Route::post('/paystack/wallet/fund', [PaymentController::class, 'fundWalletWithPaystack']);
+        Route::get('/payment/verify/{reference}', [PaymentController::class, 'verifyPaystackPayment'])->name('payment.verify');
+        Route::post('/paystack/trip/pay', [PaymentController::class, 'payForTripWithPaystack']);
+
+
+
     });
 
     // Testing Routes

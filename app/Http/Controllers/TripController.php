@@ -107,6 +107,59 @@ class TripController extends Controller
 
 
 
+// public function store(Request $request)
+// {
+//     // Validate the data
+//     $validator = Validator::make($request->all(), [
+//         'location' => 'string|max:255',
+//         'destination' => 'string|max:255',
+//         'amount' => 'string|max:225',
+//         'number_of_passengers' => 'required|integer|max:3',
+//         'rider_name' => 'required|string|max:225',
+//     ]);
+
+//     $user = $request->user();
+
+//     // Check if validation fails
+//     if ($validator->fails()) {
+//         return response()->json([
+//             'success' => false,
+//             'errors' => $validator->errors()
+//         ], 422);
+//     }
+
+//     try {
+//         // Create a new trip using the validated data
+//         $validatedData = $validator->validated();
+//         $validatedData['user_id'] = Auth::id();
+
+//         $trip = Trip::create($validatedData); // Create the trip
+        
+//         // Add the user's name and phone number to the created trip
+//         $trip->name = $user->firstName . ' ' . $user->lastName;
+//         $trip->phone_number = $user->phone;
+//         $trip->save(); // Save the updated trip details
+
+//         // Trigger the event
+//         event(new TripRequested($trip));
+
+//         // Return a resource response with the newly created trip
+//         return response()->json([
+//             'success' => true,
+//             'data' => new TripResource($trip)
+//         ], 201);
+
+//     } catch (\Exception $e) {
+//         // Return error response if something goes wrong during storage
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'There was an error storing the trip.',
+//             'error' => $e->getMessage()
+//         ], 500);
+//     }
+// }
+
+
 public function store(Request $request)
 {
     // Validate the data
@@ -200,18 +253,37 @@ public function store(Request $request)
     // }
 
 
-    public function acceptTrip(Request $request, Trip $trip)
+//     public function acceptTrip(Request $request, Trip $trip)
+// {
+//     $trip->update([
+//         'status' => 'accepted',
+//         'driver_id' => auth()->id(), // authenticated driver (from users table)
+//         'subaccount_id' => auth()->subaccount_id, // subaccount ID from the request
+//     ]);
+
+//     return response()->json([
+//         'status' => true,
+//         'message' => 'Trip accepted successfully.'
+//     ]);
+// }
+
+public function acceptTrip(Request $request, Trip $trip)
 {
+    $user = auth()->user(); // Authenticated driver
+
     $trip->update([
         'status' => 'accepted',
-        'driver_id' => auth()->id(), // authenticated driver (from users table)
+        'driver_id' => auth()->user()->id, // driver's user ID
+        'subaccount_id' => 32, // driver's subaccount_id from users table
     ]);
 
     return response()->json([
         'status' => true,
         'message' => 'Trip accepted successfully.'
+        
     ]);
 }
+
 
 public function getTripsByUser(Request $request)
 {
@@ -266,6 +338,7 @@ public function accept(Request $request, $tripId)
         $trip->update([
             'status' => 'Accepted',
             'driver_id' => auth()->id(),
+            'subaccount_id' => auth()->user()->subaccount_id,
         ]);
 
         return response()->json([

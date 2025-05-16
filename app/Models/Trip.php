@@ -24,6 +24,7 @@ class Trip extends Model
         'phone_number',
         'name',
         'driver_id',
+        'subaccount_id',
     ];
 
     // public function user()
@@ -34,7 +35,7 @@ class Trip extends Model
 
     public function user()
 {
-    return $this->belongsTo(User::class, 'user_id');
+    return $this->belongsTo(User::class, 'user_id'); 
 }
 
 public function driver()

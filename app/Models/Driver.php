@@ -13,6 +13,7 @@ class Driver extends Model
        'fullname',
        'phone_number',
        'picture',
+       'subaccount_id',
     ];
 
     protected $hidden = [

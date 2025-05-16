@@ -37,6 +37,7 @@ class User extends Authenticatable implements AuthenticatableContract, CanResetP
         'verification_code',
          'fullname',
          'picture',
+         'subaccount_id',
     ];
 
     /**
