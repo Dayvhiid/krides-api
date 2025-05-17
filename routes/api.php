@@ -96,7 +96,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         //Paymment Management
         Route::post('/wallet/fund', [PaymentController::class, 'fundWallet']);
         // Route::any('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
-        Route::post('/trip/pay', [PaymentController::class, 'payForTrip']);
+        Route::post('/trip/pay', [PaymentController::class, 'payForTrip']); 
 
         Route::post('/paystack/wallet/fund', [PaymentController::class, 'fundWalletWithPaystack']);
         Route::get('/payment/verify/{reference}', [PaymentController::class, 'verifyPaystackPayment'])->name('payment.verify');

@@ -140,72 +140,161 @@ public function handleCallback(Request $request)
 
 
 
+    // public function payForTrip(Request $request)
+    // {
+    //     $request->validate([
+    //         'trip_id' => 'required|exists:trips,id',
+    //         'method' => 'required|in:wallet,direct',
+    //     ]);
+
+    //     $user = auth()->user();
+    //     $trip = Trip::findOrFail($request->trip_id);
+
+    //     if ($trip->status === 'paid') {
+    //         return response()->json(['message' => 'Trip already paid'], 400);
+    //     }
+
+    //     if ($request->method === 'wallet') {
+    //         if ($user->wallet_balance < $trip->amount) {
+    //             return response()->json(['message' => 'Insufficient wallet balance'], 400);
+    //         }
+
+    //         // Deduct from wallet
+    //         $user->wallet_balance -= $trip->amount;
+    //         $user->save();
+
+    //         $trip->status = 'paid';
+    //         $trip->save();
+
+    //         Transaction::create([
+    //             'user_id' => $user->id,
+    //             'amount' => $trip->amount,
+    //             'type' => 'debit', //Fix This
+    //             'reference' => Str::uuid(),
+    //             'description' => 'Trip payment from wallet',
+    //         ]);
+
+    //         // You can also update the driver’s wallet here or send money via Flutterwave transfer
+
+    //         return response()->json(['message' => 'Trip paid using wallet']);
+    //     }
+
+    //     // Direct payment with split
+    //     $reference = Str::uuid();
+    //     $flutterwaveResponse = Http::withToken(env('FLW_SECRET_KEY'))->post('https://api.flutterwave.com/v3/payments', [
+    //         'tx_ref' => $reference,
+    //         'amount' => $trip->amount,
+    //         'currency' => 'NGN',
+    //         'redirect_url' => route('payment.callback'),
+    //         'customer' => [
+    //             'email' => $user->email,
+    //             'name' => $user->name,
+    //         ],
+    //         'subaccounts' => [
+    //             [
+    //                 'id' => $trip->subaccount_id,// Hold
+    //                 'transaction_charge_type' => 'flat',
+    //                 'transaction_charge' => 50, // your fee
+    //             ]
+    //         ],
+    //         'customizations' => [
+    //             'title' => 'Trip Payment',
+    //             'description' => 'Pay for your trip',
+    //         ],
+    //     ]);
+
+    //     $data = $flutterwaveResponse->json();
+    //     return response()->json(['link' => $data['data']['link']]);
+    // }
+
+
     public function payForTrip(Request $request)
-    {
-        $request->validate([
-            'trip_id' => 'required|exists:trips,id',
-            'method' => 'required|in:wallet,direct',
-        ]);
+{
+    $request->validate([
+        'trip_id' => 'required|exists:trips,id',
+        'method' => 'required|in:wallet,direct',
+    ]);
 
-        $user = auth()->user();
-        $trip = Trip::findOrFail($request->trip_id);
+    $user = auth()->user();
+    $trip = Trip::findOrFail($request->trip_id);
 
-        if ($trip->status === 'paid') {
-            return response()->json(['message' => 'Trip already paid'], 400);
-        }
-
-        if ($request->method === 'wallet') {
-            if ($user->wallet_balance < $trip->amount) {
-                return response()->json(['message' => 'Insufficient wallet balance'], 400);
-            }
-
-            // Deduct from wallet
-            $user->wallet_balance -= $trip->amount;
-            $user->save();
-
-            $trip->status = 'paid';
-            $trip->save();
-
-            Transaction::create([
-                'user_id' => $user->id,
-                'amount' => $trip->amount,
-                'type' => 'debit', //Fix This
-                'reference' => Str::uuid(),
-                'description' => 'Trip payment from wallet',
-            ]);
-
-            // You can also update the driver’s wallet here or send money via Flutterwave transfer
-
-            return response()->json(['message' => 'Trip paid using wallet']);
-        }
-
-        // Direct payment with split
-        $reference = Str::uuid();
-        $flutterwaveResponse = Http::withToken(env('FLW_SECRET_KEY'))->post('https://api.flutterwave.com/v3/payments', [
-            'tx_ref' => $reference,
-            'amount' => $trip->amount,
-            'currency' => 'NGN',
-            'redirect_url' => route('payment.callback'),
-            'customer' => [
-                'email' => $user->email,
-                'name' => $user->name,
-            ],
-            'subaccounts' => [
-                [
-                    'id' => $trip->subaccount_id,// Hold
-                    'transaction_charge_type' => 'flat',
-                    'transaction_charge' => 50, // your fee
-                ]
-            ],
-            'customizations' => [
-                'title' => 'Trip Payment',
-                'description' => 'Pay for your trip',
-            ],
-        ]);
-
-        $data = $flutterwaveResponse->json();
-        return response()->json(['link' => $data['data']['link']]);
+    if ($trip->status === 'paid') {
+        return response()->json(['message' => 'Trip already paid'], 400);
     }
+
+    // Get the driver from users table
+    $driver = User::find($trip->driver_id);
+    if (!$driver) {
+        return response()->json(['message' => 'Driver not found'], 404);
+    }
+
+    if ($request->method === 'wallet') {
+        if ($user->wallet_balance < $trip->amount) {
+            return response()->json(['message' => 'Insufficient wallet balance'], 400);
+        }
+
+        // Deduct from rider's wallet
+        $user->wallet_balance -= $trip->amount;
+        $user->save();
+
+        // Credit driver's wallet
+        $driver->wallet_balance += $trip->amount;
+        $driver->save();
+
+        $trip->status = 'paid';
+        $trip->save();
+
+        Transaction::create([
+            'user_id' => $user->id,
+            'amount' => $trip->amount,
+            'type' => 'debit',
+            'reference' => Str::uuid(),
+            'description' => 'Trip payment from wallet',
+        ]);
+
+        Transaction::create([
+            'user_id' => $driver->id,
+            'amount' => $trip->amount,
+            'type' => 'credit',
+            'reference' => Str::uuid(),
+            'description' => 'Trip earning to driver wallet',
+        ]);
+
+        return response()->json(['message' => 'Trip paid using wallet']);
+    }
+
+    // Direct payment (Flutterwave)
+    $reference = Str::uuid();
+    $flutterwaveResponse = Http::withToken(env('FLW_SECRET_KEY'))->post('https://api.flutterwave.com/v3/payments', [
+        'tx_ref' => $reference,
+        'amount' => $trip->amount,
+        'currency' => 'NGN',
+        'redirect_url' => route('payment.callback'),
+        'customer' => [
+            'email' => $user->email,
+            'name' => $user->name,
+        ],
+        'subaccounts' => [
+            [
+                'id' => $trip->subaccount_id,
+                'transaction_charge_type' => 'flat',
+                'transaction_charge' => 50,
+            ]
+        ],
+        'customizations' => [
+            'title' => 'Trip Payment',
+            'description' => 'Pay for your trip',
+        ],
+    ]);
+
+    $data = $flutterwaveResponse->json();
+
+    // NOTE: Since payment is external, you should handle driver wallet update in the payment callback
+    // Do NOT credit the driver's wallet here yet — wait for confirmation in callback
+
+    return response()->json(['link' => $data['data']['link']]);
+}
+
 
 
 
