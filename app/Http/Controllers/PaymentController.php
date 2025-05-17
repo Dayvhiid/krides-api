@@ -194,7 +194,7 @@ public function handleCallback(Request $request)
                 [
                     'id' => $trip->subaccount_id,// Hold
                     'transaction_charge_type' => 'flat',
-                    'transaction_charge' => 100, // your fee
+                    'transaction_charge' => 50, // your fee
                 ]
             ],
             'customizations' => [
