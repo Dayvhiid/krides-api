@@ -87,6 +87,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::post('/trips/{trip}/accept', [TripController::class, 'accept']);// accepts the ride while using the trips  id //dcmt
         Route::get('trips/{trip}', [TripController::class, 'show']);//get a specific trip by id //dcmt
 
+        Route::post('/trip/accept/{id}', [DriverController::class, 'acceptTrip']); //new route to accept trip
+
 
         //Endpoint for drivers to update their subaccount id
         Route::put('/driver/subaccount', [DriverController::class, 'updateSubaccountId']); //dcmt

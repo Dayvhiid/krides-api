@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\DriverResource;
 use Illuminate\Support\Facades\Validator;
+use App\Events\TripAcceptedEvent;
 
 class DriverController extends Controller
 {
@@ -147,7 +148,7 @@ class DriverController extends Controller
         return new DriverResource(auth()->user());
     }
 
-    // public function list(){ //should pick the vehicle ID and driver name
+    // public function list(){ //should pick the vehicle ID and driver nameF
     //     $drivers = User::whereNotNull('vehicle_id')->pluck('fullname');
 
     //     // Return the results as a JSON response
@@ -204,16 +205,72 @@ class DriverController extends Controller
 }
 
 
+
+
+
+public function acceptTrip($id)
+{
+    $trip = Trip::find($id);
+     $userFullname = auth()->user()->fullname;
+    // Check if trip exists and belongs to this driver
+    if (!$trip || $trip->rider_name !== $userFullname) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Trip not found or unauthorized.'
+        ], 404);
+    }
+
+    // Update trip status to 'accepted'
+     $trip->driver_id = auth()->id();
+    $trip->status = 'Accepted';
+    $trip->save();
+
+    // Fire event to notify the user
+    // event(new TripAcceptedEvent($trip));
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Trip accepted.',
+        'data' => $trip
+    ]);
+}
+
+
+
+// public function fetchRidesGlobal()
+// {
+//     // Fetch all trips with a status of 'pending'
+//     $trips = Trip::whereNULL('status')->get();
+
+//     // Check if any trips were found
+//     if ($trips->isEmpty()) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'No pending trips found.'
+//         ], 404);
+//     }
+
+//     // Return the filtered trips
+//     return response()->json([
+//         'success' => true,
+//         'data' => $trips
+//     ], 200);  }
+
+
 public function fetchRidesGlobal()
 {
-    // Fetch all trips with a status of 'pending'
-    $trips = Trip::whereNULL('status')->get();
+    $userFullname = auth()->user()->fullname;
+
+    // Fetch trips with null status where the rider_name matches the authenticated user's full name
+    $trips = Trip::whereNull('status')
+                ->where('rider_name', $userFullname)
+                ->get();
 
     // Check if any trips were found
     if ($trips->isEmpty()) {
         return response()->json([
             'success' => false,
-            'message' => 'No pending trips found.'
+            'message' => 'No pending trips found for this user.'
         ], 404);
     }
 
@@ -221,7 +278,9 @@ public function fetchRidesGlobal()
     return response()->json([
         'success' => true,
         'data' => $trips
-    ], 200);  }
+    ], 200);
+}
+
 
 
  public function updateSubaccountId(Request $request)
