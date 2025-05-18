@@ -415,6 +415,25 @@
   ```json
 
 
+##### New Route to Accept rides
+- **URL**: `/api/auth/trip/accept/{trip_id}`
+- **Method**: `POST`
+- **Description**: New Route to accept rides.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Response Example**:
+  ```json
+  {
+    "trips": [
+      {
+        "success": true,
+        "data": "trips resource (with appended driver details)",
+      },      
+    ]
+  }   
+  
+
+
 ##### Get Trip Info
 - **URL**: `/api/auth/trips/{trip_id}`
 - **Method**: `GET`
