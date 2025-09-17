@@ -87,18 +87,25 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::post('/trips/{trip}/accept', [TripController::class, 'accept']);// accepts the ride while using the trips  id //dcmt
         Route::get('trips/{trip}', [TripController::class, 'show']);//get a specific trip by id //dcmt
 
-        Route::post('/trip/accept/{id}', [DriverController::class, 'acceptTrip']); //new route to accept trip
+        Route::get('/trip/accept/{id}', [DriverController::class, 'acceptTrip']); //new route to accept trip
 
 
         //Endpoint for drivers to update their subaccount id
         Route::put('/driver/subaccount', [DriverController::class, 'updateSubaccountId']); //dcmt
+         Route::post('/driver/bank-details', [DriverController::class, 'updateBankDetails']);
 
 
 
         //Paymment Management
-        Route::post('/wallet/fund', [PaymentController::class, 'fundWallet']);
+        Route::post('/wallet/fund', [PaymentController::class, 'fundWallet']);// dcmt
         // Route::any('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
         Route::post('/trip/pay', [PaymentController::class, 'payForTrip']); 
+
+        Route::post('/initiate-payment', [PaymentController::class, 'initiatePayment']); //dcmt
+
+        Route::post('/payment/callback', [PaymentController::class, 'handleFlutterwaveCallback'])->name('payment.callback');//dcmt
+        Route::post('/driver/withdraw', [DriverController::class, 'requestWithdrawal']);//dcmt
+
 
         Route::post('/paystack/wallet/fund', [PaymentController::class, 'fundWalletWithPaystack']);
         Route::get('/payment/verify/{reference}', [PaymentController::class, 'verifyPaystackPayment'])->name('payment.verify');

@@ -25,6 +25,7 @@ class Trip extends Model
         'name',
         'driver_id',
         'subaccount_id',
+        'payment_reference'
     ];
 
     // public function user()

@@ -1,40 +1,87 @@
-version: '3.8'
+# version: '3.8'
+# services:
+#   laravel-app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: laravel-app
+#     ports:
+#       - "80:80"
+#     environment:
+#       - APP_ENV=production
+#       - APP_KEY=${APP_KEY}
+#       - APP_DEBUG=false
+#       - APP_URL=http://localhost
+#       - DB_CONNECTION=mysql
+#       - DB_HOST=db
+#       - DB_PORT=3306
+#       - DB_DATABASE=${DB_DATABASE}
+#       - DB_USERNAME=${DB_USERNAME}
+#       - DB_PASSWORD=${DB_PASSWORD}
+#     volumes:
+#       - .:/var/www
+#     depends_on:
+#       - db
+
+#   db:
+#     image: mysql:5.7
+#     container_name: db
+#     environment:
+#       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+#       MYSQL_DATABASE: ${DB_DATABASE}
+#       MYSQL_USER: ${DB_USERNAME}
+#       MYSQL_PASSWORD: ${DB_PASSWORD}
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - dbdata:/var/lib/mysql
+
+# volumes:
+#   dbdata:
+
+
+# version: '3.8'
+
 services:
-  laravel-app:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel-app
+    container_name: laravel_app
+    restart: unless-stopped
     ports:
-      - "80:80"
-    environment:
-      - APP_ENV=production
-      - APP_KEY=${APP_KEY}
-      - APP_DEBUG=false
-      - APP_URL=http://localhost
-      - DB_CONNECTION=mysql
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - "8000:80"
     volumes:
-      - .:/var/www
+      - .:/var/www/html
     depends_on:
       - db
 
   db:
-    image: mysql:5.7
-    container_name: db
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
     ports:
       - "3306:3306"
     volumes:
-      - dbdata:/var/lib/mysql
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
 
 volumes:
-  dbdata:
+  db_data:
+

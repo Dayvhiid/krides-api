@@ -13,57 +13,7 @@ use App\Events\TripAcceptedEvent;
 
 class DriverController extends Controller
 {
-    // public function register(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [ 
-    //         'password' => 'required|string|min:6',
-    //         'phone' => 'required|string',
-    //         'fullname' => 'string',
-    //         'picture' => '|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //         'vehicle_id' => 'required|string',  
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json($validator->errors()->toJson(), 400);
-    //     }
-
-    //     $verificationCode = rand(1000, 9999);
-    //     $uniqueEmail = strtolower(str_replace(' ', '_', $request->fullname)) . '_' . time() . '@example.com';
-
-
-    //     $user = User::create(array_merge(
-    //         $validator->validated(),
-    //         [
-    //             'password' => bcrypt($request->password),
-    //             'verification_code' => $verificationCode,
-    //             'email' => $uniqueEmail,
-    //             'role' => 'driver'
-    //         ]
-    //     ));
-
-
-    //     if ($request->hasFile('picture')) {
-    //         // Store the picture in the 'public' directory and get the file path
-    //         $path = $request->file('picture')->store('drivers_pictures', 'public');
-
-    //         // Save the file path to the database (assuming you're saving to the 'drivers' table)
-    //         $driver = new Driver();
-    //         $driver->picture = $path; // Save the file path to the 'picture' column
-    //         $driver->save();
-    //     }
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-    //     return response()->json([
-    //         'access token' => $token,
-    //        'message' => 'Driver successfully registered',
-    //         'verification_code' => $verificationCode,
-    //        'user' => $user
-    //    ], 201);
-
-    // }
-
-
-    public function register(Request $request)
-{
+    public function register(Request $request) {
     // Validate the incoming request
     $validator = Validator::make($request->all(), [
         'password' => 'required|string|min:6',
@@ -299,6 +249,72 @@ public function fetchRidesGlobal()
             'data' => $driver,
         ]);
     }
+
+
+    public function requestWithdrawal(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'amount' => 'required|numeric|min:100|max:' . $user->wallet_balance,
+    ]);
+
+    $amount = $request->amount;
+
+    // Optionally: create withdrawal request record, pending payout
+
+    if ($user->wallet_balance < $amount) {
+        return response()->json(['message' => 'Insufficient wallet balance'], 400);
+    }
+
+    // Trigger payout to driver's bank account (using Flutterwave Payouts API)
+    $payoutResult = $this->payoutToDriver(
+        $user->account_number,
+        $user->bank_code,
+        $amount,
+        $user->email,
+        $user->fullname
+    );
+
+    if (!$payoutResult['success']) {
+        return response()->json(['message' => 'Payout failed: ' . $payoutResult['message']], 500);
+    }
+
+    // Deduct from wallet after successful payout
+    $user->wallet_balance -= $amount;
+    $user->save();
+
+    return response()->json(['message' => 'Withdrawal successful, funds sent to your bank account.']);
+}
+
+
+
+public function updateBankDetails(Request $request)
+{
+    $request->validate([
+        'bank_code'      => 'string',      // e.g. 044 = Access, 50211 = Kuda
+        'account_number' => 'digits:10',   //
+    ]);
+
+    $driver = auth()->user();
+
+    // Ensure only drivers can update bank details
+    if ($driver->role !== 'driver') {
+        return response()->json(['message' => 'Only drivers can update bank details'], 403);
+    }
+
+    $driver->bank_code      = $request->bank_code;
+    $driver->account_number = $request->account_number;
+    $driver->save();
+
+    return response()->json([
+        'message' => 'Bank details updated successfully',
+        'bank_code' => $driver->bank_code,
+        'account_number' => $driver->account_number,
+    ]);
+}
+
+
 
 
 }

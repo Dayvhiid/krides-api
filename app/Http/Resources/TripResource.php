@@ -31,7 +31,7 @@ class TripResource extends JsonResource
             'number_of_passengers' => $this->number_of_passengers,
             'rider_name' => $this->rider_name,
             'amount' => $this->amount,
-
+            'status' => $this->status,
             'name' => $this->user->name,
             'email' => $this->user->email,
             'phone' => $this->user->phone,
