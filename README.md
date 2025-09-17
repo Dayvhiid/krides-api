@@ -404,16 +404,6 @@
   }   
  
 
- ### Accept Rides
-- **URL**: `/api/auth/trips{trip_id}/accept`
-- **Method**: `POST`
-- **Description**: An endpoint to accept user rides by  trip id.
-- **Request Parameters**:
-  - `Please leave the request body empty` .
-
-- **Response Example**:
-  ```json
-
 
 ##### New Route to Accept rides
 - **URL**: `/api/auth/trip/accept/{trip_id}`
@@ -450,6 +440,64 @@
       },      
     ]
   }   
+
+##### Wallet Funding
+- **URL**: `/api/auth/wallet/fund`
+- **Method**: `POST`
+- **Description**: Handles wallet funding.
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Request Parameters**:
+  - `amount` .
+
+- **Response Example**:
+  Redirects to the flutterwave platform. 
+
+
+##### Trip Payment
+- **URL**: `/api/auth/trip/pay`
+- **Method**: `POST`
+- **Description**: Hanldes the payment of trips, the trip first has to have been accepted by a rider, and the method parameter is either "direct" or "wallet".
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Request Parameters**:
+  - `trip_id` .
+   - `method` direct or wallet.
+
+- **Response Example**:
+    ```json
+  {
+    "transactions": [
+      {
+        "success": true,
+        "data": "Trip paid via wallet (direct bank transfer + wallet updated",
+      },      
+    ]
+  } 
+
+
+##### Trip Payment
+- **URL**: `/api/auth/driver/bank-details`
+- **Method**: `POST`
+- **Description**: Handles updating bank detials. Note that the bank code is not required but the account_number and bank_name are neccessary 
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Request Parameters**:
+  - `bank_code` optional.
+  - `bank_name` required.
+  - `account_number` required.
+
+- **Response Example**:
+    ```json
+  {
+    "driver": [
+      {
+        "success": true,
+        "data": "bank details updated succesfully",
+      },      
+    ]
+  } 
+
   
 
 ## Method
@@ -490,6 +538,9 @@ This endpoint allows authenticated users to update their profile picture. The up
         "updated_at": "2023-10-05T15:30:00.000000Z"
     }
 }
+
+
+
 
 
 

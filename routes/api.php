@@ -92,7 +92,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
 
         //Endpoint for drivers to update their subaccount id
         Route::put('/driver/subaccount', [DriverController::class, 'updateSubaccountId']); //dcmt
-         Route::post('/driver/bank-details', [DriverController::class, 'updateBankDetails']);
+        Route::post('/driver/bank-details', [DriverController::class, 'updateBankDetails']);
 
 
 
