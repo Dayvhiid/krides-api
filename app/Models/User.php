@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use App\Notifications\CustomVerifyEmail;
 
 class User extends Authenticatable implements AuthenticatableContract, CanResetPasswordContract, MustVerifyEmail
 {
@@ -90,9 +91,13 @@ class User extends Authenticatable implements AuthenticatableContract, CanResetP
         return [];
     }
 
-    public function sendPasswordResetNotification($token)
-{
-    $this->notify(new ResetPasswordNotification($token));
-}
+    public function sendPasswordResetNotification($token) {
+     $this->notify(new ResetPasswordNotification($token));
+    }
+
+     public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail);
+    }
 
 }

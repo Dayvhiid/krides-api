@@ -476,7 +476,7 @@
   } 
 
 
-##### Trip Payment
+##### Updating Driver details
 - **URL**: `/api/auth/driver/bank-details`
 - **Method**: `POST`
 - **Description**: Handles updating bank detials. Note that the bank code is not required but the account_number and bank_name are neccessary 
@@ -497,6 +497,50 @@
       },      
     ]
   } 
+
+##### Email Verification
+- **URL**: `/api/email/verify`
+- **Method**: `POST`
+- **Description**: Handles Email Verification
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Request Parameters**:
+
+- **Response Example**:
+    ```json
+  {
+    "driver": [
+      {
+        "success": true,
+        "data": "Email Verfication Link Sent || Email verified already", 
+      },      
+    ]
+  }
+
+##### Password Reset
+- **URL**: `/api/auth/forgot-password`
+- **Method**: `POST`
+- **Description**: Handles password rest
+- **Request Headers**:
+  - `Authorization` (string, required): Bearer token.
+- **Request Parameters**:
+   - `email` required.
+- **Response Example**:
+    ```json
+  {
+    "driver": [
+      {
+        "success": true,
+        "data": "Password reset Link sent", 
+      },      
+    ]
+  }   
+
+##### Google Oauth
+- **URL**: `/api/auth/google`
+- **Method**: `GET`
+- **Description**: Handles Google Oauth
+
 
   
 

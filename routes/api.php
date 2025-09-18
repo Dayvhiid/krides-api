@@ -20,6 +20,7 @@ use App\Http\Controllers\{
     AuthenticationController,
     GoogleController,
     PaymentController,
+    EmailVerificationController,
     Auth\PasswordResetController,
     Auth\ForgotPasswordController
 };
@@ -30,14 +31,10 @@ use App\Http\Controllers\{
 // })->name('password.reset');
 
 // Email Verification
-Route::middleware('auth:sanctum')->post('/email/verify', function (Request $request) {
-    if ($request->user()->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email already verified.'], 200);
-    }
-
-    $request->user()->sendEmailVerificationNotification();
-    return response()->json(['message' => 'Verification link sent.'], 200);
-});
+Route::middleware('auth:sanctum')->post('/email/verify', [EmailVerificationController::class, 'send']);
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['signed']) // ensures link is valid
+    ->name('verification.verify');
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     // Driver Authentication
@@ -138,15 +135,6 @@ Route::middleware(['web'])->group(function () {
 });
 
 
-Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
-    $user = User::findOrFail($id);
-    Auth::login($user);
-
-    request()->merge(['hash' => $hash]);
-    app(EmailVerificationRequest::class)->fulfill();
-
-    return response()->json(['message' => 'Email successfully verified.'], 200);
-})->middleware(['signed'])->name('verification.verify');
 
 // Schedule Command for Deleting Unaccepted Trips
 // Artisan::command('schedule:run', function ($schedule) {
