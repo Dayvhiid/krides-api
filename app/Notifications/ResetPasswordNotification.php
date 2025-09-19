@@ -35,7 +35,7 @@ class ResetPasswordNotification extends Notification
     {
         return (new MailMessage)
                     ->line('This is your password update link.')
-                    ->action('Click To Update Password', url('/reset-password/{token}'))
+                    ->action('Click To Update Password', url('/reset-password/' . $this->token))
                     ->line('Thank you for using our application!');
     }
 

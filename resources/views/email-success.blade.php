@@ -1,65 +1,114 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Email Verified</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-<script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#1173d4",
-                        "background-light": "#f6f7f8",
-                        "background-dark": "#101922",
-                    },
-                    fontFamily: {
-                        "display": ["Plus Jakarta Sans"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
-<style>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified</title>
+  <style>
+    :root {
+      --primary: #1173d4;
+      --background-light: #f6f7f8;
+      --background-dark: #101922;
+      --text-light: #ffffff;
+      --text-dark: #1a1a1a;
+    }
+
     body {
-      min-height: max(884px, 100dvh);
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--background-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .icon-circle {
+      width: 80px;
+      height: 80px;
+      background: rgba(17, 115, 212, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .icon-circle svg {
+      width: 48px;
+      height: 48px;
+      fill: var(--primary);
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem;
+    }
+
+    p {
+      max-width: 320px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    footer {
+      padding: 1rem;
+    }
+
+    button {
+      width: 100%;
+      max-width: 400px;
+      background: var(--primary);
+      color: var(--text-light);
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #0f66bb;
     }
   </style>
-  </head>
-<body class="bg-background-light dark:bg-background-dark font-display">
-<div class="flex flex-col h-screen">
-<header class="flex-shrink-0">
-<div class="p-4">
-<h1 class="text-lg font-bold text-center text-gray-900 dark:text-white">Verification</h1>
-</div>
-</header>
-<main class="flex-grow flex flex-col items-center justify-center text-center px-6">
-<div class="w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mb-6">
-<span class="material-symbols-outlined text-primary text-4xl">
-                    check_circle
-                </span>
-</div>
-<h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Email Verified!</h2>
-<p class="text-gray-600 dark:text-gray-300 max-w-sm">
-                Your email has been successfully verified. You can now continue to use the app and enjoy your rides.
-            </p>
-</main>
-<footer class="flex-shrink-0 p-4">
-<button class="w-full bg-primary text-white font-bold py-3 px-5 rounded-lg hover:bg-primary/90 transition-colors">
-                Continue on the app
-            </button>
-</footer>
-</div>
+</head>
+<body>
+  <header>
+    Verification
+  </header>
 
-</body></html>
+  <main>
+    <div class="icon-circle">
+      <!-- ✅ Checkmark Icon (SVG, no external fonts) -->
+      <svg viewBox="0 0 24 24">
+        <path d="M9 16.2l-3.5-3.5 1.4-1.4L9 13.4l8.1-8.1 1.4 1.4z"/>
+      </svg>
+    </div>
+    <h2>Email Verified!</h2>
+    <p>Your email has been successfully verified. You can now continue to use the app and enjoy your rides.</p>
+  </main>
+
+  {{-- <footer>
+    <button>Continue on the app</button>
+  </footer> --}}
+</body>
+</html>

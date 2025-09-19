@@ -29,7 +29,9 @@ use App\Http\Controllers\{
 
 // Email Verification
 Route::middleware('auth:sanctum')->post('/email/verify', [EmailVerificationController::class, 'send']);
+//Password Reset
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+// Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
 // Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
 
