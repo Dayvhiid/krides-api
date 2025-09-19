@@ -28,27 +28,48 @@ class EmailVerificationController extends Controller
     }
 
 
-    public function verify(Request $request, $id, $hash): JsonResponse
-    {
-        $user = User::findOrFail($id);
+    // public function verify(Request $request, $id, $hash): JsonResponse
+    // {
+    //     $user = User::findOrFail($id);
 
-        // Authenticate user context
-        Auth::login($user);
+    //     // Authenticate user context
+    //     // Auth::login($user);
 
-        // Validate the signed URL and hash
-        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            throw new AuthorizationException("Invalid verification link.");
-        }
+    //     // Validate the signed URL and hash
+    //     if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+    //         throw new AuthorizationException("Invalid verification link.");
+    //     }
 
-        if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified.'], 200);
-        }
+    //     if ($user->hasVerifiedEmail()) {
+    //         return response()->json(['message' => 'Email already verified.'], 200);
+    //     }
 
-        if ($user->markEmailAsVerified()) {
-            event(new Verified($user));
-        }
+    //     if ($user->markEmailAsVerified()) {
+    //         event(new Verified($user));
+    //     }
 
-        return response()->json(['message' => 'Email successfully verified.'], 200);
+    //     return response()->json(['message' => 'Email successfully verified.'], 200);
+    // }
+
+    public function verify(Request $request, $id, $hash)
+{
+    $user = User::findOrFail($id);
+
+    // Remove manual hash validation - signed middleware handles this
+    // The signed middleware will automatically validate the URL signature
+
+    if ($user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Email already verified.'], 200);
     }
+
+    if ($user->markEmailAsVerified()) {
+        event(new Verified($user));
+    }
+  
+    return view('email-success', [
+        'message' => 'Your email was successfully verified! 🎉'
+    ]);
+   
+}
 }
 

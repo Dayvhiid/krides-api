@@ -43,6 +43,8 @@ class CustomVerifyEmail extends Notification
             ->salutation('Cheers, Krides API Team 🚀'); // removes default "Regards, Laravel"
     }
 
+
+
     /**
      * Get the array representation of the notification (optional).
      */

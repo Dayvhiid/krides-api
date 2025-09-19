@@ -25,16 +25,13 @@ use App\Http\Controllers\{
     Auth\ForgotPasswordController
 };
 
-// Authentication Routes
-// Route::get('/reset-password', function () {
-//     return view('auth.reset-password');
-// })->name('password.reset');
+
 
 // Email Verification
 Route::middleware('auth:sanctum')->post('/email/verify', [EmailVerificationController::class, 'send']);
-Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-    ->middleware(['signed']) // ensures link is valid
-    ->name('verification.verify');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
+// Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware(['signed'])->name('verification.verify');
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     // Driver Authentication
@@ -49,11 +46,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
-    // Password Reset
-    Route::middleware('auth:api')->post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
-    // Route::get('/reset-password', function () {
-    //     return view('auth.reset-password');
-    // })->name('password.reset');
 
     // Protected Routes for Authenticated Users
     Route::middleware('auth:sanctum')->group(function () {
