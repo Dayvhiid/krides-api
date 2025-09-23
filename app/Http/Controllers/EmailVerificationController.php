@@ -15,41 +15,33 @@ use Illuminate\Http\Request;
 
 class EmailVerificationController extends Controller
 {
-    public function send(Request $request)
-    {
-        if ($request->user()->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified.'], 200);
-        }
 
-        // This will throw raw errors if mail fails
-        $request->user()->sendEmailVerificationNotification();
 
-        return response()->json(['message' => 'Verification link sent.'], 200);
+    public function send(Request $request) {
+    // Validate the email parameter
+    $request->validate([
+        'email' => 'required|email|exists:users,email'
+    ]);
+
+    // Find the user by email
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
-
-    // public function verify(Request $request, $id, $hash): JsonResponse
-    // {
-    //     $user = User::findOrFail($id);
-
-    //     // Authenticate user context
-    //     // Auth::login($user);
-
-    //     // Validate the signed URL and hash
-    //     if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-    //         throw new AuthorizationException("Invalid verification link.");
-    //     }
-
-    //     if ($user->hasVerifiedEmail()) {
-    //         return response()->json(['message' => 'Email already verified.'], 200);
-    //     }
-
-    //     if ($user->markEmailAsVerified()) {
-    //         event(new Verified($user));
-    //     }
-
-    //     return response()->json(['message' => 'Email successfully verified.'], 200);
+    // if ($user->hasVerifiedEmail()) {
+    //     return response()->json(['message' => 'Email already verified.'], 200);
     // }
+
+    // Send email verification notification
+    $user->sendEmailVerificationNotification();
+
+    return response()->json(['message' => 'Verification link sent.'], 200);
+}
+
+
+ 
 
     public function verify(Request $request, $id, $hash)
 {

@@ -540,8 +540,16 @@
 - **URL**: `/api/auth/google`
 - **Method**: `GET`
 - **Description**: Handles Google Oauth
-
-
+- **Response Example**:
+    ```json
+  {
+    "user": [
+      {
+        "success": true,
+        "data": "User Login Meta Data", 
+      },      
+    ]
+  } 
   
 
 ## Method
