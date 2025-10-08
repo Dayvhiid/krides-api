@@ -29,6 +29,7 @@ use App\Http\Controllers\{
 
 // Email Verification
 Route::post('/email/verify', [EmailVerificationController::class, 'send']);
+Route::post('/email/verification-status', [EmailVerificationController::class, 'status'])->name('verification.status');
 //Password Reset
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 // Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword']);

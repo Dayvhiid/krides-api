@@ -63,5 +63,30 @@ class EmailVerificationController extends Controller
     ]);
    
 }
+
+ public function status (Request $request) {
+        // Validate incoming email
+        $data = $request->validate([
+            'email' => 'required|string|email|exists:users,email',
+        ]);
+
+        // Retrieve the user (we validated existence)
+        $user = User::where('email', $data['email'])->first();
+
+        // Null check on the email_verified_at field
+        if (is_null($user->email_verified_at)) {
+            return response()->json([
+                'status'  => 'unverified',
+                'message' => 'This email address has not been verified.',
+            ], 200);
+        }
+
+        return response()->json([
+            'status'      => 'verified',
+            'message'     => 'This email address has been verified.',
+            // safe formatting: optional() handles Carbon instance or null (but branch ensures not null)
+            'verified_at' => optional($user->email_verified_at)->toDateTimeString(),
+        ], 200);
+    }
 }
 
