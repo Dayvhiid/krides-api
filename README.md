@@ -517,6 +517,23 @@
     ]
   }
 
+
+##### Email Verification status check
+- **URL**: `/api/email/verification-status`
+- **Method**: `POST`
+- **Description**: Email verification status check
+- **Request Parameters**: `email`
+- **Response Example**:
+    ```json
+  {
+    "driver": [
+      {
+        "success": true,
+        "data": "Email Verfiied successfully at $timeverified", 
+      },      
+    ]
+  }
+
 ##### Password Reset
 - **URL**: `/api/auth/forgot-password`
 - **Method**: `POST`
