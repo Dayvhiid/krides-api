@@ -1,3 +1,13 @@
 node_modules
-vendor
-.git
+vendor/
+.env
+/storage/*.key
+/*.sqlite*
+/public/storage
+/.git
+/.github
+/.idea
+/.vscode
+.DS_Store
+npm-debug.log
+yarn-error.log

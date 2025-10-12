@@ -1,0 +1,11 @@
+# Render configuration for Docker deployment
+# Docs: https://render.com/docs/docker
+
+services:
+  - type: web_service
++    name: krides-api
++    env: docker
++    plan: starter
++    dockerfilePath: Dockerfile
++    buildCommand: ''
++    startCommand: ''

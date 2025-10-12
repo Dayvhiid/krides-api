@@ -1,3 +1,67 @@
+
+# --- Stage 1: Node builder (build front-end assets) ---------------------
+FROM node:18-alpine AS node_builder
+WORKDIR /app
+
+# Only copy package files to leverage cache
+COPY package.json package-lock.json yarn.lock* ./
+RUN npm ci --silent || npm install --silent
+
+# Copy rest and build assets
+COPY . .
+RUN if [ -f package.json ] && npm run build --if-present; then echo "Vite build done"; fi
+
+
+# --- Stage 2: Composer / PHP dependencies --------------------------------
+FROM composer:2 AS composer_builder
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts --no-autoloader
+COPY . .
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+
+
+# --- Stage 3: Final runtime image ---------------------------------------
+FROM php:8.2-apache
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        unzip \
+        libzip-dev \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+        zip \
+        curl \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath xml zip \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
+
+# Copy application files from composer stage (includes vendor)
+COPY --from=composer_builder /app /var/www/html
+
+# Copy built assets from node stage if present
+COPY --from=node_builder /app/public/build /var/www/html/public/build
+
+# Fix permissions for Laravel writable folders
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Update Apache configuration to use the Laravel public folder
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri -e 's!/var/www/!/var/www/html/!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD curl -f http://localhost/ || exit 1
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]
 # Use PHP 8.3 with Apache
 FROM php:8.3-apache
 

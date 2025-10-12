@@ -78,6 +78,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function () {
         Route::get('/driver/trips', [DriverController::class, 'fetchRidesGlobal']); //get a list of all pending trips.   //dcmt
         Route::post('/trips/{trip}/accept', [TripController::class, 'accept']);// accepts the ride while using the trips  id //dcmt
         Route::get('trips/{trip}', [TripController::class, 'show']);//get a specific trip by id //dcmt
+        Route::get('/trips/daily-summary', [TripController::class, 'dailySummary']);
 
         Route::get('/trip/accept/{id}', [DriverController::class, 'acceptTrip']); //new route to accept trip
 

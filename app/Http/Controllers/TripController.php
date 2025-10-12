@@ -181,6 +181,32 @@ public function show($id)
      return new TripResource($trip);
 }
 
+    // Return today's trip count and total amount for the authenticated driver
+    public function dailySummary(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $driverId = $user->id;
+        $today = Carbon::today()->toDateString();
+
+        $result = Trip::where('driver_id', $driverId)
+            ->whereDate('created_at', $today)
+            ->selectRaw('COUNT(*) as count, COALESCE(SUM(CAST(amount AS DECIMAL(10,2))),0) as total')
+            ->first();
+
+        return response()->json([
+            'date' => $today,
+            'count' => (int) $result->count,
+            'total_amount' => number_format((float) $result->total, 2, '.', '')
+        ]);
+    }
+
+
+
+
 
 
 }

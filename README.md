@@ -534,6 +534,23 @@
     ]
   }
 
+ ##### Email Verification status check
+- **URL**: `/api/auth/trips/daily-summary`
+- **Method**: `GET`
+- **Description**: Get daily trips details
+- **Response Example**:
+    ```json
+  {
+    "driver": [
+      {
+        "success": true,
+        "date": "", 
+        "count": "", 
+        "total_amount": "",
+      },      
+    ]
+  }
+
 ##### Password Reset
 - **URL**: `/api/auth/forgot-password`
 - **Method**: `POST`
